@@ -4,6 +4,7 @@ import (
 	"anothapp_towatch/database"
 	"anothapp_towatch/helpers"
 	"anothapp_towatch/repositories"
+	"fmt"
 )
 
 var (
@@ -19,19 +20,19 @@ func main() {
 
 	usersRows := userRepository.GetUsers()
 	defer usersRows.Close()
-	/*
-		var id string
 
-			for usersRows.Next() {
-				usersRows.Scan(&id)
+	var id string
 
-				fmt.Printf("Update shows to watch for user : %s\n", id)
-	*/
-	showsRows := userShowRepository.GetShowsToContinueByUserId("107385984010527617533")
-	defer showsRows.Close()
+	for usersRows.Next() {
+		usersRows.Scan(&id)
 
-	shows := watchHelper.CheckShowsToWatch(showsRows)
-	userToWatchRepository.DeleteToWatchByUserId("107385984010527617533")
-	userToWatchRepository.UpdateShowsToWatchByUserId("107385984010527617533", shows)
-	//}
+		fmt.Printf("Update shows to watch for user : %s\n", id)
+
+		showsRows := userShowRepository.GetShowsToContinueByUserId(id)
+		defer showsRows.Close()
+
+		shows := watchHelper.CheckShowsToWatch(showsRows)
+		userToWatchRepository.DeleteToWatchByUserId(id)
+		userToWatchRepository.UpdateShowsToWatchByUserId(id, shows)
+	}
 }
