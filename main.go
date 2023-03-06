@@ -26,7 +26,7 @@ func main() {
 	for usersRows.Next() {
 		usersRows.Scan(&id)
 
-		fmt.Printf("Update shows to watch for user : %s\n", id)
+		fmt.Printf("User : %s\n", id)
 
 		showsRows := userShowRepository.GetShowsToContinueByUserId(id)
 		defer showsRows.Close()
