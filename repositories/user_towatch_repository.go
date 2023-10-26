@@ -1,37 +1,24 @@
 package repositories
 
 import (
+	"anothapp_towatch/database"
 	"anothapp_towatch/models"
-	"database/sql"
 	"fmt"
 	"strings"
 )
 
-type userToWatchRepository struct {
-	db *sql.DB
-}
-
-type UserToWatchRepository interface {
-	UpdateShowsToWatchByUserId(userId string, shows []models.ShowDto)
-	DeleteToWatchByUserId(userId string)
-}
-
-func NewUserToWatchRepository(db *sql.DB) UserToWatchRepository {
-	return &userToWatchRepository{db}
-}
-
-func (u *userToWatchRepository) DeleteToWatchByUserId(userId string) {
+func DeleteToWatchByUserId(userId string) {
 	queryStmt := `
 		DELETE FROM users_towatch
 		WHERE user_id = $1
 	`
 
-	if _, err := u.db.Query(queryStmt, userId); err != nil {
+	if _, err := database.Db.Query(queryStmt, userId); err != nil {
 		panic(err.Error())
 	}
 }
 
-func (u *userToWatchRepository) UpdateShowsToWatchByUserId(userId string, shows []models.ShowDto) {
+func UpdateShowsToWatchByUserId(userId string, shows []models.ShowDto) {
 	queryToWatch := `
 		INSERT INTO users_towatch (user_id, show_id, nb)
 		VALUES
@@ -54,11 +41,11 @@ func (u *userToWatchRepository) UpdateShowsToWatchByUserId(userId string, shows 
 	queryToWatch = strings.TrimSuffix(queryToWatch, ",") + ";"
 	queryUpdateContinue = strings.TrimSuffix(queryUpdateContinue, ",") + ");"
 
-	if _, insertErr := u.db.Query(queryToWatch); insertErr != nil {
+	if _, insertErr := database.Db.Query(queryToWatch); insertErr != nil {
 		fmt.Println(insertErr.Error())
 	}
 
-	if _, updateErr := u.db.Query(queryUpdateContinue, userId); updateErr != nil {
+	if _, updateErr := database.Db.Query(queryUpdateContinue, userId); updateErr != nil {
 		fmt.Println(updateErr.Error())
 	}
 }

@@ -7,18 +7,11 @@ import (
 	"fmt"
 )
 
-var (
-	db                    = database.Open()
-	userRepository        = repositories.NewUserRepository(db)
-	userShowRepository    = repositories.NewUserShowRepository(db)
-	userToWatchRepository = repositories.NewUserToWatchRepository(db)
-	watchHelper           = helpers.NewWatchHelper()
-)
-
 func main() {
-	defer database.Close(db)
+	database.Open()
+	defer database.Close()
 
-	usersRows := userRepository.GetUsers()
+	usersRows := repositories.GetUsers()
 	defer usersRows.Close()
 
 	var id string
@@ -28,11 +21,11 @@ func main() {
 
 		fmt.Printf("User : %s\n", id)
 
-		showsRows := userShowRepository.GetShowsToContinueByUserId(id)
+		showsRows := repositories.GetShowsToContinueByUserId(id)
 		defer showsRows.Close()
 
-		shows := watchHelper.CheckShowsToWatch(showsRows)
-		userToWatchRepository.DeleteToWatchByUserId(id)
-		userToWatchRepository.UpdateShowsToWatchByUserId(id, shows)
+		shows := helpers.CheckShowsToWatch(showsRows)
+		repositories.DeleteToWatchByUserId(id)
+		repositories.UpdateShowsToWatchByUserId(id, shows)
 	}
 }

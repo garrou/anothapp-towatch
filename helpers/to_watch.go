@@ -10,18 +10,7 @@ import (
 	"strings"
 )
 
-type watchHelper struct {
-}
-
-type WatchHelper interface {
-	CheckShowsToWatch(rows *sql.Rows) []models.ShowDto
-}
-
-func NewWatchHelper() WatchHelper {
-	return &watchHelper{}
-}
-
-func (w *watchHelper) CheckShowsToWatch(rows *sql.Rows) []models.ShowDto {
+func CheckShowsToWatch(rows *sql.Rows) []models.ShowDto {
 	var id, number int
 	var showInfos models.ShowInfos
 	var showsToWatch []models.ShowDto

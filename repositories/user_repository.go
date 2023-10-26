@@ -1,24 +1,13 @@
 package repositories
 
 import (
+	"anothapp_towatch/database"
 	"database/sql"
 )
 
-type userRepository struct {
-	db *sql.DB
-}
-
-type UserRepository interface {
-	GetUsers() *sql.Rows
-}
-
-func NewUserRepository(db *sql.DB) UserRepository {
-	return &userRepository{db}
-}
-
-func (u *userRepository) GetUsers() *sql.Rows {
+func GetUsers() *sql.Rows {
 	queryStmt := `SELECT id FROM users`
-	rows, err := u.db.Query(queryStmt)
+	rows, err := database.Db.Query(queryStmt)
 
 	if err != nil {
 		panic(err.Error())

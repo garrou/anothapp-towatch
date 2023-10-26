@@ -9,7 +9,9 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func Open() *sql.DB {
+var Db *sql.DB
+
+func Open() {
 	errEnv := godotenv.Load()
 
 	if errEnv != nil {
@@ -28,12 +30,12 @@ func Open() *sql.DB {
 	if pingErr := db.Ping(); pingErr != nil {
 		panic(pingErr.Error())
 	}
-	return db
+	Db = db
 }
 
-func Close(db *sql.DB) {
+func Close() {
 
-	if err := db.Close(); err != nil {
+	if err := Db.Close(); err != nil {
 		panic(err.Error())
 	}
 }

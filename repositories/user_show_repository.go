@@ -1,22 +1,11 @@
 package repositories
 
 import (
+	"anothapp_towatch/database"
 	"database/sql"
 )
 
-type userShowRepository struct {
-	db *sql.DB
-}
-
-type UserShowRepository interface {
-	GetShowsToContinueByUserId(userId string) *sql.Rows
-}
-
-func NewUserShowRepository(db *sql.DB) UserShowRepository {
-	return &userShowRepository{db}
-}
-
-func (u *userShowRepository) GetShowsToContinueByUserId(userId string) *sql.Rows {
+func GetShowsToContinueByUserId(userId string) *sql.Rows {
 	queryStmt := `
 		SELECT shows.id AS id, MAX(number) AS number
         FROM users_shows
@@ -26,7 +15,7 @@ func (u *userShowRepository) GetShowsToContinueByUserId(userId string) *sql.Rows
         GROUP BY shows.id, title, poster
 	`
 
-	rows, err := u.db.Query(queryStmt, userId)
+	rows, err := database.Db.Query(queryStmt, userId)
 
 	if err != nil {
 		panic(err.Error())
