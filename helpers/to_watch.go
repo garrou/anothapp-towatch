@@ -19,7 +19,7 @@ func CheckShowsToWatch(rows *sql.Rows) []models.ShowDto {
 	for rows.Next() {
 		rows.Scan(&id, &number)
 
-		body := HttpGet(fmt.Sprintf("https://api.betaseries.com/shows/display?id=%d&key=%s", id, apiKey))
+		body := HttpGet(fmt.Sprintf("https://api.betaseries.com/shows/display?id=%d", id), apiKey)
 
 		if err := json.Unmarshal(body, &showInfos); err != nil {
 			panic(err.Error())
